@@ -9,78 +9,68 @@ import org.testng.annotations.Test;
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.CoreMatchers.equalTo;
 
-public class StoresCRUD {
+public class CategoriesCRUD {
 
     RequestSpecification requestSpecification;
     Response response;
     ValidatableResponse validatableResponse;
 
     @Test
-    public void getAllStores() {
+    public void getAllCategories() {
         response = given().log().all()
                 .when()
-                .get("http://localhost:3030/stores");
+                .get("http://localhost:3030/categories");
         response.then().log().all().statusCode(200);
-
     }
 
     @Test
-    public void createNew() {
+    public void postCategory() {
         String jsonData = "{\n" +
-                "  \"name\": \"Lees\",\n" +
-                "  \"type\": \"Grocery\",\n" +
-                "  \"address\": \"Islington\",\n" +
-                "  \"address2\": \"Islington\",\n" +
-                "  \"city\": \"London\",\n" +
-                "  \"state\": \"string\",\n" +
-                "  \"zip\": \"string\",\n" +
-                "  \"lat\": 0,\n" +
-                "  \"lng\": 0,\n" +
-                "  \"hours\": \"string\",\n" +
-                "    \"services\": {}\n" +
+                "  \"name\": \"Learning\",\n" +
+                "  \"id\": \"zoom122\"\n" +
                 "}";
-        validatableResponse = given().log().all()
+        validatableResponse = given()
                 .contentType(ContentType.JSON)
                 .body(jsonData)
-                .post("http://localhost:3030/stores")
+                .post("http://localhost:3030/categories")
                 .then().log().all()
                 .statusCode(201)
-                .body("name", equalTo("Lees"))
-                .body("type", equalTo("Grocery"));
+                .body("name", equalTo("Learning"))
+                .body("id", equalTo("zoom122"));
 
     }
 
     @Test
-    public void deleteStoreById() {
+    public void deleteCategoryById() {
         response = given().log().all()
                 .when()
-                .delete("http://localhost:3030/products/8921");
+                .delete("http://localhost:3030/categories/zoom122");
         response.then().log().all()
-                .statusCode(404);
+                .assertThat().statusCode(404);
     }
 
     @Test
-    public void getStoreByID() {
+    public void getCategoryById() {
         response = given().log().all()
                 .when()
-                .get("http://localhost:3030/stores/8921");
+                .get("http://localhost:3030/categories/zoom122");
         response.then().log().all()
                 .statusCode(200);
     }
 
     @Test
-    public void patchStoreById() {
-        String jsonData = "{ \n" +
-                " \"type\": \"News Agent\"\n" +
+    public void patchCategory() {
+        String jsonData = "{\n" +
+                "  \"name\": \"Automation\",\n" +
+                "  \"id\": \"zoom122\"\n" +
                 "}";
         response = given().log().all()
                 .contentType(ContentType.JSON)
                 .when()
                 .body(jsonData)
-                .patch("http://localhost:3030/stores/8921");
+                .patch("http://localhost:3030/categories/zoom122");
         response.then().log().all().statusCode(200)
-                .body("type", equalTo("News Agent"));
-
+                .body("name", equalTo("Automation"));
     }
 
 }
